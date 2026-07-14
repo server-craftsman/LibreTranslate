@@ -1,0 +1,9 @@
+# render.yaml
+services:
+  - type: web
+    name: libretranslate
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: WEBConcurrency
+        value: "1"
