@@ -15,3 +15,9 @@ def app(*args, **kwargs):
             sys.argv.append(kwargs[k])
 
     return main()
+from libretranslate.app import create_app
+
+app = create_app()
+
+if __name__ == "__main__":
+    app.run()
