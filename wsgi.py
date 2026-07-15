@@ -1,23 +1,23 @@
+import os
+import sys
+
+sys.argv = ["libretranslate", "--wsgi"]
+
+# Optional: pass env vars as CLI args
+env_mappings = {
+    "LT_HOST": "--host",
+    "LT_PORT": "--port",
+    "LT_LOAD_ONLY": "--load-only",
+    "LT_DISABLE_WEB_UI": "--disable-web-ui",
+    "LT_API_KEYS": "--api-keys",
+    "LT_REQ_LIMIT": "--req-limit",
+    "LT_CHAR_LIMIT": "--char-limit",
+}
+
+for env_var, cli_arg in env_mappings.items():
+    if env_var in os.environ:
+        sys.argv.append(cli_arg)
+        sys.argv.append(os.environ[env_var])
+
 from libretranslate import main
-
-
-def app(*args, **kwargs):
-    import sys
-    sys.argv = ['--wsgi']
-
-    for k in kwargs:
-        ck = k.replace("_", "-")
-        if isinstance(kwargs[k], bool):
-            if kwargs[k]:
-                sys.argv.append("--" + ck)
-        else:
-            sys.argv.append("--" + ck)
-            sys.argv.append(kwargs[k])
-
-    return main()
-from libretranslate.app import create_app
-
-app = create_app()
-
-if __name__ == "__main__":
-    app.run()
+app = main()
