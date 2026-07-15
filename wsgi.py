@@ -1,23 +1,18 @@
-import os
-import sys
+from libretranslate.main import main
+from libretranslate.app import create_app
 
-sys.argv = ["libretranslate", "--wsgi"]
+# Override create_app signature nếu cần
+import libretranslate.main as lt_main
+_original_create_app = lt_main.create_app
 
-# Optional: pass env vars as CLI args
-env_mappings = {
-    "LT_HOST": "--host",
-    "LT_PORT": "--port",
-    "LT_LOAD_ONLY": "--load-only",
-    "LT_DISABLE_WEB_UI": "--disable-web-ui",
-    "LT_API_KEYS": "--api-keys",
-    "LT_REQ_LIMIT": "--req-limit",
-    "LT_CHAR_LIMIT": "--char-limit",
-}
+def patched_create_app(args=None):
+    if args is None:
+        # Create empty args
+        class Args: pass
+        args = Args()
+    return _original_create_app(args)
 
-for env_var, cli_arg in env_mappings.items():
-    if env_var in os.environ:
-        sys.argv.append(cli_arg)
-        sys.argv.append(os.environ[env_var])
+lt_main.create_app = patched_create_app
 
-from libretranslate import main
-app = main()
+# Now safe to call
+app = lt_main.create_app()
